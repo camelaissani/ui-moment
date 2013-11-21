@@ -1,0 +1,100 @@
+@baseBorderRadius: 3px;
+@baseFontSize: 14px;
+@baseLineHeight: 20px;
+@blue: #2a6496;
+@fontFamily: "Helvetica Neue", Helvetica, Arial, sans-serif;
+@grayDark: lighten(#000, 20%);   // #333
+@gray: lighten(#000, 33.5%); // #555
+@grayLighter: lighten(#000, 93.5%); // #eee
+
+
+.blue { color: @blue; }
+
+.current-moment {
+    line-height: @baseLineHeight * 2;
+    margin: 25px;
+
+    .formatted-date {
+       font-size: @baseFontSize * 2;
+        padding-left: 10px; 
+    }   
+}
+
+input[type="text"][ui-moment] {
+  display: inline-block;
+  height: @baseLineHeight;
+  padding: 4px 6px;
+  margin-bottom: @baseLineHeight / 2;
+  font-size: @baseFontSize;
+  line-height: @baseLineHeight;
+  color: @blue;
+  border-radius: @baseBorderRadius;
+  vertical-align: middle;
+}
+
+.ui-moment {
+    background: @grayLighter;
+    border-radius: @baseBorderRadius;
+    font-family: @fontFamily;
+    height: 260px;
+    padding: 5px;
+    position: absolute;
+    width: 350px;
+
+    .header {
+        height: 35px;
+        line-height: 35px;
+        text-align: center;
+
+        a {
+            border-top: 8px solid transparent;
+            border-bottom: 8px solid transparent;
+            color: @blue;
+            height: 0;
+            margin: 10px;
+            width: 0;
+
+            &:hover { cursor: pointer; }
+
+            &:first-of-type {
+                border-right: @baseFontSize solid @blue;
+                float: left;
+
+                &:hover { border-right-color: lighten(@blue, 15%); }
+            }
+
+            &:last-of-type {
+                border-left: @baseFontSize solid @blue;
+                float: right;
+
+                &:hover { border-left-color: lighten(@blue, 15%); }
+            }
+        }
+
+        .month {
+            font-size: @baseFontSize * 1.5;
+            margin-right: 5px;
+        }
+
+        .year {
+            color: @gray;
+        }
+    }
+
+    .month-table {
+        width: 100%;
+
+        td {
+            padding: 5px;
+            text-align: center;
+            vertical-align: middle;
+        }
+
+        .day {
+            background: white;
+            cursor: pointer;
+
+            &:hover { background: lighten(@blue, 20%); }
+        }
+    }
+}

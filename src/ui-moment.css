@@ -1,0 +1,83 @@
+.blue {
+  color: #2a6496;
+}
+.current-moment {
+  line-height: 40px;
+  margin: 25px;
+}
+.current-moment .formatted-date {
+  font-size: 28px;
+  padding-left: 10px;
+}
+input[type="text"][ui-moment] {
+  display: inline-block;
+  height: 20px;
+  padding: 4px 6px;
+  margin-bottom: 10px;
+  font-size: 14px;
+  line-height: 20px;
+  color: #2a6496;
+  border-radius: 3px;
+  vertical-align: middle;
+}
+.ui-moment {
+  background: #eeeeee;
+  border-radius: 3px;
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  height: 260px;
+  padding: 5px;
+  position: absolute;
+  width: 350px;
+}
+.ui-moment .header {
+  height: 35px;
+  line-height: 35px;
+  text-align: center;
+}
+.ui-moment .header a {
+  border-top: 8px solid transparent;
+  border-bottom: 8px solid transparent;
+  color: #2a6496;
+  height: 0;
+  margin: 10px;
+  width: 0;
+}
+.ui-moment .header a:hover {
+  cursor: pointer;
+}
+.ui-moment .header a:first-of-type {
+  border-right: 14px solid #2a6496;
+  float: left;
+}
+.ui-moment .header a:first-of-type:hover {
+  border-right-color: #428bca;
+}
+.ui-moment .header a:last-of-type {
+  border-left: 14px solid #2a6496;
+  float: right;
+}
+.ui-moment .header a:last-of-type:hover {
+  border-left-color: #428bca;
+}
+.ui-moment .header .month {
+  font-size: 21px;
+  margin-right: 5px;
+}
+.ui-moment .header .year {
+  color: #555555;
+}
+.ui-moment .month-table {
+  width: 100%;
+}
+.ui-moment .month-table td {
+  padding: 5px;
+  text-align: center;
+  vertical-align: middle;
+}
+.ui-moment .month-table .day {
+  background: white;
+  cursor: pointer;
+}
+.ui-moment .month-table .day:hover {
+  background: #5697d0;
+}

@@ -1,0 +1,21 @@
+{
+  "name": "angular-ui-moment",
+  "version": "0.0.1",
+  "description": "This angular directive allows you to add a smart date-picker based on momentjs to your form elements.",
+  "main": "src/ui-moment.js",
+  "scripts": {},
+  "keywords": [
+    "angular",
+    "momentjs",
+    "datepicker"
+  ],
+  "author": "Jonathon Munsell (@munsellj)",
+  "license": "MIT",
+  "devDependencies": {
+    "grunt": "~0.4.1",
+    "grunt-contrib-jshint": "~0.7.1",
+    "grunt-karma": "~0.6.2",
+    "grunt-contrib-less": "~0.8.1",
+    "grunt-contrib-watch": "~0.5.3"
+  }
+}
