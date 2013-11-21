@@ -1,3 +1,4 @@
-# ui-moment directive
+ui-moment directive
+=========
 
-A basic date picker for AngularJS based on moment.js
+An AngularJS date picker based on moment.js
