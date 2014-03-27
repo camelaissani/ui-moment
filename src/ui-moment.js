@@ -1,18 +1,12 @@
 /* globals angular:true, moment:true, console:true */
-/**
-*
-*
-*
-*
-*/
-angular.module('ui.moment', []);
+/*jshint multistr: true */
+'use strict';
 
-angular.module('ui.moment').constant('uiMomentConfig', {});
+angular.module('ui.moment', ['ng'])
+  .constant('uiMomentConfig', {})
+  .directive('uiMoment', ['$locale', '$filter', '$window', 'uiMomentConfig', function ($locale, $filter, $window, uiMomentConfig) {
+  var options = {};
 
-angular.module('ui.moment').directive('uiMoment', ['uiMomentConfig', function (uiMomentConfig) {
-  'use strict';
-  var options;
-  options = {};
   angular.extend(options, uiMomentConfig);
 
   return {
@@ -20,16 +14,12 @@ angular.module('ui.moment').directive('uiMoment', ['uiMomentConfig', function (u
     link: function postLink(scope, element, attrs, controller) {
       console.log('its here.  now: ' + moment()._d);
       console.log(arguments);
-      // constants
 
       // directive variables
-      var currOffset = 0;
-      var currMoment = moment();  // the currently selected moment
-      var pickerElem;
-      var targetMoment = moment().add('months', currOffset); // the current month
-
-      // scope variables
-
+      var currOffset = 0,
+          currMoment = moment(),  // the currently selected moment
+          targetMoment = moment().add('months', currOffset); // the current month
+      var pickerElem, pickerHeaderSpans, pickerBody;
 
       // directive functions
 
@@ -40,18 +30,46 @@ angular.module('ui.moment').directive('uiMoment', ['uiMomentConfig', function (u
       * @private
       */
       var init = function () {
+        var monthSelectors;
+        var localizedWeekDays = '',
+            rowHtml = '';
+
+        for (var i = 0; i < $locale.DATETIME_FORMATS.SHORTDAY.length; i++) {
+          localizedWeekDays += '<th class="js-ui-moment">'+$locale.DATETIME_FORMATS.SHORTDAY[i]+'</th>';
+        }
+        // need be able to display 6 weeks at max
+        for (var j = 0; j < 6; j++) {
+          rowHtml += '<tr><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>';
+        }
         pickerElem = angular.element(document.createElement('div'));
-        pickerElem.addClass('ui-moment');
-        pickerElem.html('<div class="header"><a class="pre-month"></a><span class="month"></span><span class="year"></span><a class="next-month"></a></div><table class="month-table"><thead><tr><th>Sun</th><th>Mon</th><th>Tue</th><th>Wed</th><th>Thu</th><th>Fri</th><th>Sat</th></tr></thead><tbody></tbody></table>');
-        
+        pickerElem.addClass('ui-moment js-ui-moment');
+        pickerElem.html('\
+          <div class="js-ui-moment header">\
+            <a class="js-ui-moment pre-month" href=""></a>\
+            <span class="js-ui-moment month"></span>\
+            <span class="js-ui-moment year"></span>\
+            <a class="js-ui-moment next-month" href=""></a>\
+          </div>\
+          <table class="js-ui-moment month-table">\
+            <thead>\
+              <tr>'+localizedWeekDays+'</tr>\
+            </thead>\
+            <tbody>'+rowHtml+'</tbody>\
+          </table>');
+
         // add click handlers to the month toggle buttons
-        var monthToggles = pickerElem.find('a');
-        angular.element(monthToggles[0]).on('click', function () {
-          renderPicker(--currOffset);
+        monthSelectors = pickerElem.find('a');
+        angular.element(monthSelectors[0]).on('click', function (event) {
+          updatePickerContent(--currOffset);
+          event.preventDefault();
         });
-        angular.element(monthToggles[1]).on('click', function () {
-          renderPicker(++currOffset);
+        angular.element(monthSelectors[1]).on('click', function (event) {
+          updatePickerContent(++currOffset);
+          event.preventDefault();
         });
+
+        pickerHeaderSpans = pickerElem.find('span');
+        pickerBody = pickerElem.find('tbody');
       };
 
       /**
@@ -64,16 +82,16 @@ angular.module('ui.moment').directive('uiMoment', ['uiMomentConfig', function (u
         console.log('[parseDate()]');
 
         // try to parse the moment
-        var enteredMoment = moment(angular.element(evt.currentTarget).val());
+        var enteredDate = angular.element(evt.currentTarget).val();
 
         // update the model if one was provided
         if (controller) {
-          controller.$setViewValue(enteredMoment.format('MM/DD/YYYY'));
+          controller.$setViewValue($filter('date')(enteredDate, $locale.DATETIME_FORMATS.shortDate));
           controller.$render();
           scope.$apply();
         }
 
-        console.log(enteredMoment);
+        console.log(enteredDate);
         removePicker();
       };
 
@@ -90,22 +108,14 @@ angular.module('ui.moment').directive('uiMoment', ['uiMomentConfig', function (u
         currMoment = moment(targetMoment).date(evt.target.textContent);
         // update the model if one was provided
         if (controller) {
-          controller.$setViewValue(currMoment.format('MM/DD/YYYY'));
+          controller.$setViewValue($filter('date')(currMoment.toDate(), $locale.DATETIME_FORMATS.shortDate));
           controller.$render();
           scope.$apply();
         }
         removePicker();
       };
 
-      /**
-      * Renders a given month within the moment picker. Accepts an optional offset.
-      *
-      * @method renderPicker
-      * @private
-      * @param {Number} [offset] An optional integer offset from the current month (0 by default).
-      */
-      var renderPicker = function (offset) {
-        console.log('[renderPicker()]');
+      var updatePickerContent = function(offset) {
         // limit to 12 months back or 12 months forward
         offset = parseInt(offset, 10);
         if (isNaN(offset)) {
@@ -116,20 +126,14 @@ angular.module('ui.moment').directive('uiMoment', ['uiMomentConfig', function (u
         
         // build out the month table
         // set the header text
-        angular.element(pickerElem.find('span')[0]).html(targetMoment.format('MMMM'));
-        angular.element(pickerElem.find('span')[1]).html(targetMoment.format('YYYY'));
+        angular.element(pickerHeaderSpans[0]).html($locale.DATETIME_FORMATS.MONTH[targetMoment.month()]);
+        angular.element(pickerHeaderSpans[1]).html($filter('date')(targetMoment.toDate(), 'yyyy'));
 
-        var rowHtml = '';
-        // need be able to display 6 weeks at max
-        for (var j = 0; j < 6; j++) {
-          rowHtml += '<tr><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>';
-        }
-        pickerElem.find('tbody').html(rowHtml);
-
-        var dayElems = pickerElem.find('td');
+        var dayElems = pickerBody.find('td');
         // clear cell contents, classes and click handlers
         dayElems.html('');
         dayElems.removeClass('day');
+        dayElems.addClass('js-ui-moment');
         dayElems.off('click');
 
         //var today = moment().date();
@@ -146,20 +150,65 @@ angular.module('ui.moment').directive('uiMoment', ['uiMomentConfig', function (u
           var currElem = angular.element(dayElems[tdIdx]);
           currElem.html(i);
           currElem.addClass('day');
-          currElem.on('click', pickDate);
+          currElem.on('click', function(event) {
+          	pickDate(event);
+          	event.preventDefault();
+          });
           //console.log(currElem);
 
           tdIdx++;
         }
+      };
 
+      /**
+      * Renders a given month within the moment picker. Accepts an optional offset.
+      *
+      * @method renderPicker
+      * @private
+      * @param {Number} [offset] An optional integer offset from the current month (0 by default).
+      */
+      var renderPicker = function (offset) {
+        removePicker();
+        console.log('[renderPicker()]');
+        
+        updatePickerContent(offset);
         element.after(pickerElem);
+        
+        // hide picker when clicking outside  
+        $window.onclick = function(event) {
+          removePickerOnBadTarget(event);
+        };
       };
 
       var removePicker = function () {
         console.log('[removePicker()]');
         // clean up event listeners
-        pickerElem.find('td').off('click');
-        element.next().remove();
+
+        var days = document.querySelectorAll('td.day.js-ui-moment');
+        for (var i = 0; i < days.length; i++) {
+        	angular.element(days[i]).off('click');
+        }        
+        //pickerElem.find('td').off('click');
+        var pickers = document.querySelectorAll('div.ui-moment');
+        for (var i = 0; i < pickers.length; i++) {
+          pickers[i].remove();
+        }
+        // reset onclick event listener
+        $window.onclick = null;
+      };
+
+      var removePickerOnBadTarget = function(event) {
+        var targetElement = event.target;
+        if (!targetElement || angular.element(targetElement).attr('ui-moment')==='') {
+          return;
+        }
+
+        console.log(targetElement.classList);
+
+        if (!targetElement.classList.contains('js-ui-moment')) {
+            removePicker();
+            return;
+        }
       };
 
 
@@ -169,10 +218,12 @@ angular.module('ui.moment').directive('uiMoment', ['uiMomentConfig', function (u
       // Event Handlers
       
       // on input blur
-      //element.on('blur', parseDate);
+      //element.on('blur', removePicker);
 
       // on input focus
-      element.on('focus', renderPicker);
+      element.on('focus', function() {
+        renderPicker();
+      });
 
       // on enter key press
       element.on('keyup', function (evt) {
@@ -187,6 +238,8 @@ angular.module('ui.moment').directive('uiMoment', ['uiMomentConfig', function (u
         element.off('blur');
         element.off('focus');
         element.off('keyup');
+        // reset onclick event listener
+        $window.onclick = null;
       });
 
       // init
