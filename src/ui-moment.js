@@ -115,6 +115,13 @@ angular.module('ui.moment', ['ng'])
         removePicker();
       };
 
+      /**
+      * Update the picker according to the offset
+      *
+      * @method updatePickerContent
+      * @private
+      * @param {Number} [offset] An optional integer offset from the current month (0 by default).
+      */
       var updatePickerContent = function(offset) {
         // limit to 12 months back or 12 months forward
         offset = parseInt(offset, 10);
@@ -197,6 +204,13 @@ angular.module('ui.moment', ['ng'])
         $window.onclick = null;
       };
 
+      /**
+       * Remove the picker when click outside.
+       * 
+       * @method renderPicker
+       * @private
+       * @param {Object} event An event object
+       */
       var removePickerOnBadTarget = function(event) {
         var targetElement = event.target;
         if (!targetElement || angular.element(targetElement).attr('ui-moment')==='') {
