@@ -19,7 +19,7 @@ angular.module('ui.moment', ['ng', 'dateParser'])
       // directive variables
       var pattern = element.attr('ui-moment'),
           currMoment = moment();  // the currently selected moment
-      var pickerElem, pickerHeaderSpans, pickerBody;
+      var pickerElem, pickerHeaderSpans, pickerBody, headerSelectors;
 
       if (pattern === '') {
         pattern = 'MM/dd/yyyy';
@@ -34,7 +34,6 @@ angular.module('ui.moment', ['ng', 'dateParser'])
       * @private
       */
       var init = function () {
-        var headerSelectors;
         var localizedWeekDays = '',
             rowHtml = '';
         
@@ -81,28 +80,6 @@ angular.module('ui.moment', ['ng', 'dateParser'])
         headerSelectors.addClass('js-ui-moment');
         pickerHeaderSpans.addClass('js-ui-moment');
         pickerElem.find('table').addClass('js-ui-moment');
-
-        // add click handlers to the month toggle buttons
-        // Year--
-        angular.element(headerSelectors[0]).on('click', function (event) {
-          updatePickerContent(0, 1);
-          event.preventDefault();
-        });
-        // Year++
-        angular.element(headerSelectors[1]).on('click', function (event) {
-          updatePickerContent(0, -1);
-          event.preventDefault();
-        });
-        // Month--
-        angular.element(headerSelectors[2]).on('click', function (event) {
-          updatePickerContent(-1);
-          event.preventDefault();
-        });
-        // Month++
-        angular.element(headerSelectors[3]).on('click', function (event) {
-          updatePickerContent(1);
-          event.preventDefault();
-        });
       };
 
       /**
@@ -157,7 +134,8 @@ angular.module('ui.moment', ['ng', 'dateParser'])
       *
       * @method updatePickerContent
       * @private
-      * @param {Number} [offset] An optional integer offset from the current month (0 by default).
+      * @param {Number} [monthOffset] An optional integer offset from the current month (possible values 0,1,-1; 0 by default).
+      * @param {Number} [yearOffset] An optional integer offset from the current year (possible values 0,1,-1; 0 by default).
       */
       var updatePickerContent = function(monthOffset, yearOffset) {
         // limit to 12 months back or 12 months forward
@@ -174,13 +152,13 @@ angular.module('ui.moment', ['ng', 'dateParser'])
           currMoment.add('month', 1);
         }
         else if (monthOffset<0) {
-          currMoment.subtract('month', -1);
+          currMoment.subtract('month', 1);
         }
         if (yearOffset>0) {
           currMoment.add('year', 1);
         }
         else if (yearOffset<0) {
-          currMoment.subtract('year', -1);
+          currMoment.subtract('year', 1);
         }
         
         // build out the month table
@@ -242,7 +220,29 @@ angular.module('ui.moment', ['ng', 'dateParser'])
         
         updatePickerContent();
         element.after(pickerElem);
-        
+
+        // add click handlers to the month toggle buttons
+        // Year--
+        angular.element(headerSelectors[0]).on('click', function (event) {
+          updatePickerContent(0, 1);
+          event.preventDefault();
+        });
+        // Year++
+        angular.element(headerSelectors[1]).on('click', function (event) {
+          updatePickerContent(0, -1);
+          event.preventDefault();
+        });
+        // Month--
+        angular.element(headerSelectors[2]).on('click', function (event) {
+          updatePickerContent(-1);
+          event.preventDefault();
+        });
+        // Month++
+        angular.element(headerSelectors[3]).on('click', function (event) {
+          updatePickerContent(1);
+          event.preventDefault();
+        });
+
         // hide picker when clicking outside  
         $window.onclick = function(event) {
           removePickerOnBadTarget(event);
@@ -253,15 +253,28 @@ angular.module('ui.moment', ['ng', 'dateParser'])
         console.log('[removePicker()]');
         // clean up event listeners
 
-        var days = document.querySelectorAll('td.day.js-ui-moment');
+        var days = document.querySelectorAll('.ui-moment td.day');
         for (var i = 0; i < days.length; i++) {
           angular.element(days[i]).off('click');
         }
-        //pickerElem.find('td').off('click');
-        var pickers = document.querySelectorAll('div.ui-moment');
+
+        // add click handlers to the month toggle buttons
+        // Year--
+        angular.element(headerSelectors[0]).off('click');
+        // Year++
+        angular.element(headerSelectors[1]).off('click');
+        // Month--
+        angular.element(headerSelectors[2]).off('click');
+        // Month++
+        angular.element(headerSelectors[3]).off('click');
+
+        var pickers = document.querySelectorAll('div.ui-moment-wrapper');
+        var picker;
         for (var j = 0; j < pickers.length; j++) {
-          pickers[j].remove();
+          picker = angular.element(pickers[j]);
+          picker.remove();
         }
+
         // reset onclick event listener
         $window.onclick = null;
       };
@@ -294,8 +307,8 @@ angular.module('ui.moment', ['ng', 'dateParser'])
       // on input blur
       //element.on('blur', removePicker);
 
-      // on input focus
-      element.on('focus', function(event) {
+      // on input click
+      element.on('click', function(event) {
         // get the date in input else current date
         console.log('[Parse input date]');
         var dateToParse = angular.element(event.currentTarget).val(),
@@ -307,6 +320,7 @@ angular.module('ui.moment', ['ng', 'dateParser'])
           console.log('['+$filter('date')(currMoment.toDate(), pattern)+']');
         }
         renderPicker();
+        event.preventDefault();
       });
 
       // on enter key press
@@ -314,13 +328,16 @@ angular.module('ui.moment', ['ng', 'dateParser'])
         if (evt.keyCode === 13) {
           parseDate(evt);
         }
+        else if (evt.keyCode === 27) {
+          removePicker();
+        }
       });
 
       scope.$on('$destroy', function () {
         console.log('Adios amigos...');
         // clean up event listeners
-        element.off('blur');
-        element.off('focus');
+        //element.off('blur');
+        element.off('click');
         element.off('keyup');
         // reset onclick event listener
         $window.onclick = null;
