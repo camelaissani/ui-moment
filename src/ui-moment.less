@@ -5,8 +5,9 @@
 @fontFamily: "Helvetica Neue", Helvetica, Arial, sans-serif;
 @grayDark: lighten(#000, 20%);   // #333
 @gray: lighten(#000, 33.5%); // #555
+@grayLight: lighten(#000, 80.5%); // #eee
 @grayLighter: lighten(#000, 93.5%); // #eee
-
+@headerHight: 50px;
 
 .blue { color: @blue; }
 
@@ -20,80 +21,151 @@
     }   
 }
 
-input[type="text"][ui-moment] {
-  display: inline-block;
-  height: @baseLineHeight;
-  padding: 4px 6px;
-  margin-bottom: @baseLineHeight / 2;
-  font-size: @baseFontSize;
-  line-height: @baseLineHeight;
-  color: @blue;
-  border-radius: @baseBorderRadius;
-  vertical-align: middle;
+.ui-moment-wrapper {
+    position: relative;
 }
 
 .ui-moment {
-    background: @grayLighter;
-    border-radius: @baseBorderRadius;
-    font-family: @fontFamily;
-    height: 260px;
-    padding: 5px;
     position: absolute;
+    top: 0px;
+    height: 280px;
     width: 350px;
+    border-radius: @baseBorderRadius;
+    background: @grayLighter;
+    font-family: @fontFamily;
 
     .header {
-        height: 35px;
-        line-height: 35px;
-        text-align: center;
+        position: absolute;
+        top: 2px;
+        width: 100%;
+        height: @headerHight;
+
+        a:hover { cursor: pointer; }
 
         a {
-            border-top: 8px solid transparent;
-            border-bottom: 8px solid transparent;
             color: @blue;
             height: 0;
-            margin: 10px;
+            /*margin: 10px;*/
             width: 0;
+        }
 
-            &:hover { cursor: pointer; }
+        .pre-month,
+        .next-month  {
+           border-top: 8px solid transparent;
+           border-bottom: 8px solid transparent;
+        }
 
-            &:first-of-type {
-                border-right: @baseFontSize solid @blue;
-                float: left;
+        .pre-month {
+           position: absolute;
+           top: 10px;
+           left: 5px;
+           margin-top: 0;
+           margin-bottom: 0;
+           border-right: @baseFontSize solid @blue;
+           &:hover { border-right-color: lighten(@blue, 15%); }
+        }
 
-                &:hover { border-right-color: lighten(@blue, 15%); }
-            }
+        .next-month {
+            position: absolute;
+            top: 10px;
+            right: 5px;
+            margin-top: 0;
+            margin-bottom: 0;
+            border-left: @baseFontSize solid @blue;
+            &:hover { border-left-color: lighten(@blue, 15%); }
+        }
 
-            &:last-of-type {
-                border-left: @baseFontSize solid @blue;
-                float: right;
+        .pre-year {
+            position: absolute;
+            top: 10px;
+            left: 50px;
+            width: 0px;
+            height: 0px;
+            border-style: solid;
+            border-width: 0 5px 10px 5px;
+            border-color: transparent transparent @blue transparent;
+            margin-top: 0;
+            margin-bottom: 0;
+            &:hover { border-bottom-color: lighten(@blue, 15%); }
+        }
 
-                &:hover { border-left-color: lighten(@blue, 15%); }
+        .next-year {
+            position: absolute;
+            bottom: 15px;
+            left: 50px;
+            width: 0px;
+            height: 0px;
+            border-style: solid;
+            border-width: 10px 5px 0 5px;
+            border-color: @blue transparent transparent transparent;
+            margin-top: 0;
+            margin-bottom: 0;
+            &:hover { border-top-color: lighten(@blue, 15%); }
+        }
+
+        .month-selectors {
+            position: absolute;
+            top:0;
+            left:0;
+            height: @headerHight;
+            width: 55%;
+
+            .month {
+                font-size: @baseFontSize * 1.5;
+                position: absolute;
+                top: 9px;
+                right:5px;
+                margin-top: 0;
+                margin-bottom: 0;
             }
         }
 
-        .month {
-            font-size: @baseFontSize * 1.5;
-            margin-right: 5px;
-        }
-
-        .year {
-            color: @gray;
+        .year-selectors {
+            text-align: left;
+            position: absolute;
+            top:0;
+            left: 55%;
+            height: @headerHight;
+            width: 50%;
+          
+            .year {
+                position: absolute;
+                top: 9px;
+                color: @gray;
+                margin-top: 0;
+                margin-bottom: 0;
+                font-size: @baseFontSize * 1.5;
+            }
         }
     }
-
-    .month-table {
+    table {
         width: 100%;
+        height: 100%;
+    }
+    .month-table {
+        position: absolute;
+        top: @headerHight + 1;
+        right: 2px;
+        left: 2px;
+        bottom: 2px;
 
         td {
             padding: 5px;
             text-align: center;
             vertical-align: middle;
+            width: 25px;
+            max-width: 25px;
         }
 
         .day {
             background: white;
             cursor: pointer;
 
+            &:hover { background: lighten(@blue, 20%); }
+        }
+
+        .day.selected {
+            background: @grayLight;
             &:hover { background: lighten(@blue, 20%); }
         }
     }

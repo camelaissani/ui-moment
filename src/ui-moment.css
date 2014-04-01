@@ -9,75 +9,149 @@
   font-size: 28px;
   padding-left: 10px;
 }
-input[type="text"][ui-moment] {
-  display: inline-block;
-  height: 20px;
-  padding: 4px 6px;
-  margin-bottom: 10px;
-  font-size: 14px;
-  line-height: 20px;
-  color: #2a6496;
-  border-radius: 3px;
-  vertical-align: middle;
+.ui-moment-wrapper {
+  position: relative;
 }
 .ui-moment {
-  background: #eeeeee;
-  border-radius: 3px;
-  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-  height: 260px;
-  padding: 5px;
   position: absolute;
+  top: 0px;
+  height: 280px;
   width: 350px;
+  border-radius: 3px;
+  background: #eeeeee;
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
 .ui-moment .header {
-  height: 35px;
-  line-height: 35px;
-  text-align: center;
-}
-.ui-moment .header a {
-  border-top: 8px solid transparent;
-  border-bottom: 8px solid transparent;
-  color: #2a6496;
-  height: 0;
-  margin: 10px;
-  width: 0;
+  position: absolute;
+  top: 2px;
+  width: 100%;
+  height: 50px;
 }
 .ui-moment .header a:hover {
   cursor: pointer;
 }
-.ui-moment .header a:first-of-type {
-  border-right: 14px solid #2a6496;
-  float: left;
+.ui-moment .header a {
+  color: #2a6496;
+  height: 0;
+  /*margin: 10px;*/
+  width: 0;
 }
-.ui-moment .header a:first-of-type:hover {
+.ui-moment .header .pre-month,
+.ui-moment .header .next-month {
+  border-top: 8px solid transparent;
+  border-bottom: 8px solid transparent;
+}
+.ui-moment .header .pre-month {
+  position: absolute;
+  top: 10px;
+  left: 5px;
+  margin-top: 0;
+  margin-bottom: 0;
+  border-right: 14px solid #2a6496;
+}
+.ui-moment .header .pre-month:hover {
   border-right-color: #428bca;
 }
-.ui-moment .header a:last-of-type {
+.ui-moment .header .next-month {
+  position: absolute;
+  top: 10px;
+  right: 5px;
+  margin-top: 0;
+  margin-bottom: 0;
   border-left: 14px solid #2a6496;
-  float: right;
 }
-.ui-moment .header a:last-of-type:hover {
+.ui-moment .header .next-month:hover {
   border-left-color: #428bca;
 }
-.ui-moment .header .month {
-  font-size: 21px;
-  margin-right: 5px;
+.ui-moment .header .pre-year {
+  position: absolute;
+  top: 10px;
+  left: 50px;
+  width: 0px;
+  height: 0px;
+  border-style: solid;
+  border-width: 0 5px 10px 5px;
+  border-color: transparent transparent #2a6496 transparent;
+  margin-top: 0;
+  margin-bottom: 0;
 }
-.ui-moment .header .year {
+.ui-moment .header .pre-year:hover {
+  border-bottom-color: #428bca;
+}
+.ui-moment .header .next-year {
+  position: absolute;
+  bottom: 15px;
+  left: 50px;
+  width: 0px;
+  height: 0px;
+  border-style: solid;
+  border-width: 10px 5px 0 5px;
+  border-color: #2a6496 transparent transparent transparent;
+  margin-top: 0;
+  margin-bottom: 0;
+}
+.ui-moment .header .next-year:hover {
+  border-top-color: #428bca;
+}
+.ui-moment .header .month-selectors {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 50px;
+  width: 55%;
+}
+.ui-moment .header .month-selectors .month {
+  font-size: 21px;
+  position: absolute;
+  top: 9px;
+  right: 5px;
+  margin-top: 0;
+  margin-bottom: 0;
+}
+.ui-moment .header .year-selectors {
+  text-align: left;
+  position: absolute;
+  top: 0;
+  left: 55%;
+  height: 50px;
+  width: 50%;
+}
+.ui-moment .header .year-selectors .year {
+  position: absolute;
+  top: 9px;
   color: #555555;
+  margin-top: 0;
+  margin-bottom: 0;
+  font-size: 21px;
+}
+.ui-moment table {
+  width: 100%;
+  height: 100%;
 }
 .ui-moment .month-table {
-  width: 100%;
+  position: absolute;
+  top: 51px;
+  right: 2px;
+  left: 2px;
+  bottom: 2px;
 }
 .ui-moment .month-table td {
   padding: 5px;
   text-align: center;
   vertical-align: middle;
+  width: 25px;
+  max-width: 25px;
 }
 .ui-moment .month-table .day {
   background: white;
   cursor: pointer;
 }
 .ui-moment .month-table .day:hover {
+  background: #5697d0;
+}
+.ui-moment .month-table .day.selected {
+  background: #cdcdcd;
+}
+.ui-moment .month-table .day.selected:hover {
   background: #5697d0;
 }
